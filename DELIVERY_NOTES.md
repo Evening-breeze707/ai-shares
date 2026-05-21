@@ -1,5 +1,5 @@
 ## 1. Prompt 截图 / 代码说明
-
+![alt text](8a1eb928aab665f9dcee25c644536b06.png)
 目标是强制模型只返回固定结构的 JSON：
 
 ```json
@@ -95,7 +95,7 @@ return AnalysisSchema.parse(JSON.parse(content));
 - 服务端使用 `JSON.parse(...)`
 - 使用 Zod 校验字段和枚举值
 - 在 `analyzeStockQuote(...)` 中增加重试
-![alt text](8a1eb928aab665f9dcee25c644536b06.png)
+
 最终流程变成：
 
 1. LLM 返回文本
