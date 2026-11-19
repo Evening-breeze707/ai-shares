@@ -35,24 +35,32 @@ export async function analyzeStockQuote(quote: StockQuote): Promise<StockAnalysi
 
   for (let attempt = 1; attempt <= 3; attempt += 1) {
     try {
-      const response = await openai.responses.create({
+      const response = await openai.chat.completions.create({
         model: analysisModel,
         temperature: 0.2,
-        max_output_tokens: 220,
-        instructions: [
-          "You are an equity research assistant.",
-          "Analyze the supplied market snapshot only.",
-          "Return strict JSON only.",
-          "Do not include markdown, code fences, or extra keys.",
-          'Return exactly this shape: {"summary":"string","sentiment":"Bullish|Neutral|Bearish","risk_level":"Low|Medium|High"}.',
-          "risk_level must reflect uncertainty and volatility risk.",
-          "summary should be concise and decision-oriented.",
-          "The summary must be natural English.",
-        ].join(" "),
-        input: `Analyze this stock quote snapshot:\n${JSON.stringify(quote, null, 2)}`,
+        max_tokens: 220,
+        messages: [
+          {
+            role: "system",
+            content: [
+              "You are an equity research assistant.",
+              "Analyze the supplied market snapshot only.",
+              "Return strict JSON only.",
+              "Do not include markdown, code fences, or extra keys.",
+              'Return exactly this shape: {"summary":"string","sentiment":"Bullish|Neutral|Bearish","risk_level":"Low|Medium|High"}.',
+              "risk_level must reflect uncertainty and volatility risk.",
+              "summary should be concise and decision-oriented.",
+              "The summary must be natural English.",
+            ].join(" "),
+          },
+          {
+            role: "user",
+            content: `Analyze this stock quote snapshot:\n${JSON.stringify(quote, null, 2)}`,
+          },
+        ],
       });
 
-      const content = response.output_text?.trim();
+      const content = response.choices[0]?.message?.content?.trim();
 
       if (!content) {
         throw new Error("OpenAI returned an empty analysis response.");
