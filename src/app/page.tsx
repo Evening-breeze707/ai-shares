@@ -412,7 +412,7 @@ export default function Home() {
           </div>
 
           {history.length > 0 ? (
-            <div className="space-y-3">
+            <div className="max-h-[520px] space-y-3 overflow-y-auto pr-2">
               {history.map((record) => (
                 <div
                   key={record.id}
